@@ -1,0 +1,1 @@
+Data downloaded from http://www.stat.columbia.edu/~gelman/arm/examples/smoking/smoke_pub.dat
