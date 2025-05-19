@@ -1,0 +1,30 @@
+model {
+    # covariate coefficients
+    for (j in 1:2) {
+        beta[j] ~ dnorm(0, 1/25) # NOTE: norm in JAGS is parameterized by precision rather than sd
+    }
+
+    # latent variables
+    pi ~ dbeta(1,1)
+
+    for (j in 1:m) {
+        Z[j] ~ dbern(pi)
+    }
+
+    # random effect parameters
+    for (k in 1:2) {
+        mu[k] ~ dnorm(0, 1/25)
+        tau[k] ~ dgamma(1, 1/5)
+    }
+
+    for (j in 1:m) {
+        alpha[j] ~ dnorm(mu[Z[j]+1], tau[Z[j]+1]) # assign mean/precision to alpha based on value of Z
+    }
+
+
+    # likelihood 
+    for (i in 1:n) {
+        p[i] <- ilogit( beta[1]*wave[i] + beta[2]*parsmk[i] + alpha[newid[i]] )
+        smkreg[i] ~ dbern(p[i])
+    }
+}

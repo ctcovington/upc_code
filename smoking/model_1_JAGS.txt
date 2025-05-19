@@ -1,0 +1,18 @@
+model {
+    # set priors
+    for (j in 1:2) {
+        beta[j] ~ dnorm(0, 1/25) # NOTE: norm in JAGS is parameterized by precision rather than sd
+    }
+
+    mu ~ dnorm(0, 1/25)
+
+    for (j in 1:m) {
+        alpha[j] ~ dnorm(mu, 1/25)
+    }
+
+    # likelihood 
+    for (i in 1:n) {
+        p[i] <- ilogit( beta[1]*wave[i] + beta[2]*parsmk[i] + alpha[newid[i]] )
+        smkreg[i] ~ dbern(p[i])
+    }
+}
